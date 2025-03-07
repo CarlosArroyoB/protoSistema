@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Votación</title>
+</head>
+<body>
+    <h2>Votación</h2>
+
+    <form id="votacion-form">
+        <label>Nombre:</label>
+        <input type="text" id="nombre" required>
+        
+        <label>DNI:</label>
+        <input type="text" id="dni" required>
+
+        <button type="button" onclick="buscarVotante()">Validar</button>
+    </form>
+
+    <div id="candidatos" style="display: none;">
+        <h3>Seleccione un candidato:</h3>
+        <select id="candidato-select"></select>
+        <button onclick="registrarVoto()">Votar</button>
+    </div>
+
+    <script>
+        function buscarVotante() {
+            let nombre = document.getElementById("nombre").value;
+            let dni = document.getElementById("dni").value;
+
+            fetch('/api/buscar-votante/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, numero_documento: dni })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.localidad) {
+                    fetch(`/api/candidatos/${data.localidad}/`)
+                        .then(response => response.json())
+                        .then(candidatos => {
+                            let select = document.getElementById("candidato-select");
+                            select.innerHTML = "";
+                            candidatos.forEach(c => {
+                                select.innerHTML += `<option value="${c.id}">${c.nombre} (${c.partido})</option>`;
+                            });
+                            document.getElementById("candidatos").style.display = "block";
+                        });
+                } else {
+                    alert("Votante no encontrado");
+                }
+            });
+        }
+
+        function registrarVoto() {
+            let candidato_id = document.getElementById("candidato-select").value;
+            let votante_id = document.getElementById("dni").value;
+
+            fetch('/api/registrar-voto/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ votante_id, candidato_id })
+            }).then(response => response.json()).then(data => alert("Voto registrado"));
+        }
+    </script>
+</body>
+</html>

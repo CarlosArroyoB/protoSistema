@@ -1,5 +1,5 @@
 from django import forms
-from .models import Votante
+from .models import Votante, Candidato
 
 class VotanteForm(forms.ModelForm):
     class Meta:
@@ -17,5 +17,18 @@ class VotanteForm(forms.ModelForm):
     def clean_numero_documento(self):
         numero_documento = self.cleaned_data.get("numero_documento")
         if not numero_documento.isdigit():
-            raise forms.ValidationError("El número de documento solo debe contener números.")
+            raise forms.ValidationError("El número de documento solo debe contener números")
+        if len(numero_documento) != 8:
+            raise forms.ValidationError("El número de documento debe tener exactamente 8 dígitos")
+
         return numero_documento
+
+class CandidatoForm(forms.ModelForm):
+    class Meta:
+        model = Candidato
+        fields = ['nombre', 'partido', 'localidad']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'partido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Partido'}),
+            'localidad': forms.Select(attrs={'class': 'form-control'}),
+        }
