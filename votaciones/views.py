@@ -1,6 +1,13 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from .forms import VotanteForm
+from .models import Votante
 
-# Create your views here.
-def respuesta(request):
-    return HttpResponse("Hola")
+def get_name(request):
+    if request.method == "POST":
+        form = VotanteForm(request.POST)
+        if form.is_valid():
+            form.save()  # Guarda los datos en SQL Server  # Redirige a una página de éxito
+    else:
+        form = VotanteForm()
+
+    return render(request, "votante.html", {"form": form})

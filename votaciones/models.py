@@ -25,22 +25,22 @@ class Votante(models.Model):
         return f"{self.nombre} {self.apellidos} ({self.numero_documento})"
 
 #dev meta nombre de la tabla 
-class Candidato(models.Model):
+#class Candidato(models.Model):
 
-    OPCIONES = [
-        ('A', 'A'),
-        ('B', 'B'),
-        ('C', 'C'),
-        ('D', 'D'),
-        ('E', 'E'),
-    ]
+    #OPCIONES = [
+        #('A', 'A'),
+        #('B', 'B'),
+       # ('C', 'C'),
+      #  ('D', 'D'),
+     #   ('E', 'E'),
+    #]
 
-    nombre = models.CharField(max_length=100)
-    partido = models.CharField(max_length=100)
-    localidad = models.CharField(max_length=10, choices=OPCIONES)  # Debe coincidir con la del votante
+    #nombre = models.CharField(max_length=100)
+    #partido = models.CharField(max_length=100)
+    #localidad = models.CharField(max_length=10, choices=OPCIONES)  # Debe coincidir con la del votante
 
-    def __str__(self):
-        return f"{self.nombre} ({self.partido})"
+    #def __str__(self):
+       # return f"{self.nombre} ({self.partido})"
 
 
 #class Voto(models.Model):
