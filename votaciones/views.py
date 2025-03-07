@@ -6,8 +6,7 @@ from .models import Votante,Candidato, Voto
 from .forms import VotanteForm, CandidatoForm
 from .serializers import VotanteSerializer,CandidatoSerializer,VotoSerializer
 
-def votar(request):
-    return render(request, "VOTACION.html")
+
 
 @api_view(['GET', 'POST'])
 def votante_list_api(request):
@@ -81,7 +80,9 @@ def registrar_voto(request):
 
 
 
-
+def votar(request):
+    return render(request, "VOTACION.html")
+    
 def candidato_form_view(request):
     if request.method == 'POST':
         form = CandidatoForm(request.POST)
