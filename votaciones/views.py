@@ -25,12 +25,12 @@ def votante_list_api(request):
 @api_view(['GET', 'POST'])
 def candidato_list_api(request):
     if request.method == 'GET':
-        candidato = Candidato.objects.all()
-        serializer = CandidatoSerializer(candidato, many=True)
+        candidatos = Candidato.objects.all()
+        serializer = CandidatoSerializer(candidatos, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = VotanteSerializer(data=request.data)
+        serializer = CandidatoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
