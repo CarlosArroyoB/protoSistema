@@ -69,8 +69,45 @@ def registrar_voto(request):
 
 
 
-def votar(request):
-    return render(request, "VOTACION.html")
+
+def votacion_view(request):
+    localidad = None
+    candidatos = []
+    mensaje = ""
+    
+    if request.method == 'POST':
+        if 'buscar_votante' in request.POST:  # Si se busca un votante
+            nombre = request.POST.get('nombre')
+            dni = request.POST.get('numero_documento')
+
+            try:
+                votante = Votante.objects.get(nombre=nombre, numero_documento=dni)
+                localidad = votante.localidad
+                candidatos = Candidato.objects.filter(localidad=localidad)
+                request.session['votante_id'] = votante.id  # Guardamos el ID del votante en sesión
+            except Votante.DoesNotExist:
+                mensaje = "Votante no encontrado."
+
+        elif 'registrar_voto' in request.POST:  # Si se registra un voto
+            votante_id = request.session.get('votante_id')
+            candidato_id = request.POST.get('candidato_id')
+
+            if votante_id and candidato_id:
+                try:
+                    votante = Votante.objects.get(id=votante_id)
+                    candidato = Candidato.objects.get(id=candidato_id)
+
+                    # Verificar si el votante ya votó
+                    if Voto.objects.filter(votante=votante).exists():
+                        mensaje = "Este votante ya ha votado."
+                    else:
+                        Voto.objects.create(votante=votante, candidato=candidato)
+                        mensaje = "Voto registrado con éxito."
+                except (Votante.DoesNotExist, Candidato.DoesNotExist):
+                    mensaje = "Error al registrar el voto."
+
+    return render(request, "votacion.html", {"localidad": localidad, "candidatos": candidatos, "mensaje": mensaje})
+
     
 def candidato_form_view(request):
     if request.method == 'POST':

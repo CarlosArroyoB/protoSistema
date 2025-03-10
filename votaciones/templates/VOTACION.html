@@ -8,64 +8,37 @@
     Para agregar al votante, se debe introducir un nombre y un número de Dni que este enlazado a ese nombre.
     Luego, en base a la localidad del votante se muestran los candidatos posibles
     <br>
-    <form id="votacion-form">
+    <h2>Buscar Votante</h2>
+    <form method="POST">
+        {% csrf_token %}
         <label>Nombre:</label>
-        <input type="text" id="nombre" required>
-        
+        <input type="text" name="nombre" required>
         <label>DNI:</label>
-        <input type="text" id="dni" required>
-
-        <button type="button" onclick="buscarVotante()">Validar</button>
+        <input type="text" name="numero_documento" required>
+        <button type="submit" name="buscar_votante">Buscar</button>
     </form>
 
-    <div id="candidatos" style="display: none;">
-        <h3>Seleccione un candidato:</h3>
-        <select id="candidato-select"></select>
-        <button onclick="registrarVoto()">Votar</button>
-    </div>
+    {% if localidad %}
+        <h3>Localidad: {{ localidad }}</h3>
 
-    <script>
-        function buscarVotante() {
-            let nombre = document.getElementById("nombre").value;
-            let dni = document.getElementById("dni").value;
+        <h2>Seleccionar Candidato</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label>Candidatos:</label>
+            <select name="candidato_id">
+                {% for candidato in candidatos %}
+                    <option value="{{ candidato.id }}">{{ candidato.nombre }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="registrar_voto">Votar</button>
+        </form>
+    {% endif %}
 
-            fetch('/api/buscar-votante/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, numero_documento: dni })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.localidad) {
-                    fetch(`/api/candidatos/${data.localidad}/`)
-                        .then(response => response.json())
-                        .then(candidatos => {
-                            let select = document.getElementById("candidato-select");
-                            select.innerHTML = "";
-                            candidatos.forEach(c => {
-                                select.innerHTML += `<option value="${c.id}">${c.nombre} (${c.partido})</option>`;
-                            });
-                            document.getElementById("candidatos").style.display = "block";
-                        });
-                } else {
-                    alert("Votante no encontrado");
-                }
-            });
-        }
+    {% if mensaje %}
+        <p>{{ mensaje }}</p>
+    {% endif %}
+</body>
+</html>
 
-        function registrarVoto() {
-            let candidato_id = document.getElementById("candidato-select").value;
-            let votante_id = document.getElementById("dni").value;
-
-            fetch('/api/registrar-voto/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ votante_id, candidato_id })
-            }).then(response => response.json()).then(data => alert("Voto registrado"));
-        }
-    </script>
-    <a href="{% url 'votante_form' %}" class="btn btn-primary">Registrar Votantes</a>
-    <br>
-    <a href="{% url 'candidato_form' %}">Registrar candidatos</a>
 </body>
 </html>
