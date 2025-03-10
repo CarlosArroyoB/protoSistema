@@ -68,15 +68,13 @@ def registrar_voto(request):
 
 
 
-
-
 def votacion_view(request):
     localidad = None
     candidatos = []
     mensaje = ""
     
     if request.method == 'POST':
-        if 'buscar_votante' in request.POST:  # Si se busca un votante
+        if 'buscar_votante' in request.POST: 
             nombre = request.POST.get('nombre')
             dni = request.POST.get('numero_documento')
 
@@ -84,11 +82,11 @@ def votacion_view(request):
                 votante = Votante.objects.get(nombre=nombre, numero_documento=dni)
                 localidad = votante.localidad
                 candidatos = Candidato.objects.filter(localidad=localidad)
-                request.session['votante_id'] = votante.id  # Guardamos el ID del votante en sesión
+                request.session['votante_id'] = votante.id  
             except Votante.DoesNotExist:
                 mensaje = "Votante no encontrado."
 
-        elif 'registrar_voto' in request.POST:  # Si se registra un voto
+        elif 'registrar_voto' in request.POST:  
             votante_id = request.session.get('votante_id')
             candidato_id = request.POST.get('candidato_id')
 

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <title>Votación</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
     <h2>Votación</h2>
@@ -37,8 +39,9 @@
     {% if mensaje %}
         <p>{{ mensaje }}</p>
     {% endif %}
-</body>
-</html>
+    <a href="{% url 'votante_form' %}">Ir a registrar Votantes</a>
+    <br>
+    <a href="{% url 'candidato_form' %}">Ir a registrar Candidatos</a>
 
 </body>
 </html>
