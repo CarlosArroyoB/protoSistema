@@ -1,5 +1,5 @@
 from django import forms
-from .models import Votante, Candidato
+from .models import Votante, Candidato, Voto
 
 class VotanteForm(forms.ModelForm):
     class Meta:
@@ -32,3 +32,12 @@ class CandidatoForm(forms.ModelForm):
             'partido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Partido'}),
             'localidad': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+# class VotacionForm(forms.ModelForm):
+#     class Meta:
+#         model = Voto
+#         fields = ['votante','candidato']
+#         widgets = [
+            
+#         ]
