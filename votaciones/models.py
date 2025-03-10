@@ -36,8 +36,7 @@ class Candidato(models.Model):
 
     nombre = models.CharField(max_length=100)
     partido = models.CharField(max_length=100)
-    localidad = models.CharField(max_length=10, choices=OPCIONES)  # Debe coincidir con la del votante
-
+    localidad = models.CharField(max_length=10, choices=OPCIONES) 
     def __str__(self):
         return f"{self.nombre} ({self.partido})"
 
@@ -46,10 +45,10 @@ class Voto(models.Model):
     votante = models.ForeignKey(Votante, on_delete=models.CASCADE)
     candidato = models.ForeignKey(Candidato, on_delete=models.CASCADE)
 
-    dni_votante = models.CharField(max_length=10, default="0000000000")  # Se guarda el DNI del votante
+    dni_votante = models.CharField(max_length=8, default="00000000")  
 
     def save(self, *args, **kwargs):
-        self.dni_votante = self.votante.numero_documento  # Asignar el DNI del votante automáticamente
+        self.dni_votante = self.votante.numero_documento  
         super().save(*args, **kwargs)
 
     def __str__(self):
